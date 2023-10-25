@@ -1,24 +1,20 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import './bootstrap.min.css';
 import Loading from './Loading';
 import divanData from './divanData.json';
 import './DivanList.css';
 
-class DivanList extends Component {
-  constructor() {
-    super();
-    this.state = {
-      isLoading: true,
-    };
-  }
+const DivanList = () => {
+  const [isLoading, setIsLoading] = useState(true);
 
-  componentDidMount() {
+  useEffect(() => {
+    // Симуляция задержки загрузки данных на 2 секунды.
     setTimeout(() => {
-      this.setState({ isLoading: false });
+      setIsLoading(false);
     }, 2000);
-  }
+  }, []);
 
-  renderTableRows() {
+  const renderTableRows = () => {
     return divanData.map((divan) => (
       <tr key={divan.id}>
         <td>{divan.fields.company}</td>
@@ -42,33 +38,31 @@ class DivanList extends Component {
         </td>
       </tr>
     ));
-  }
+  };
 
-  render() {
-    return (
-      <div className="container">
-        <h1>Информация о диванах</h1>
-        {this.state.isLoading ? (
-          <Loading />
-        ) : (
-          <table className="table table-striped">
-            <thead>
-              <tr>
-                <th>Компания</th>
-                <th>ID</th>
-                <th>Размер (см)</th>
-                <th>Ширина (см)</th>
-                <th>Высота (см)</th>
-                <th>Цена</th>
-                <th>Изображение</th>
-              </tr>
-            </thead>
-            <tbody>{this.renderTableRows()}</tbody>
-          </table>
-        )}
-      </div>
-    );
-  }
-}
+  return (
+    <div className="container">
+      <h1>Информация о диванах</h1>
+      {isLoading ? ( 
+        <Loading />
+      ) : (
+        <table className="table table-striped">
+          <thead>
+            <tr>
+              <th>Компания</th>
+              <th>ID</th>
+              <th>Размер (см)</th>
+              <th>Ширина (см)</th>
+              <th>Высота (см)</th>
+              <th>Цена</th>
+              <th>Изображение</th>
+            </tr>
+          </thead>
+          <tbody>{renderTableRows()}</tbody>
+        </table>
+      )}
+    </div>
+  );
+};
 
 export default DivanList;
