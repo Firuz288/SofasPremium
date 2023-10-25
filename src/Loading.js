@@ -4,7 +4,7 @@ const Loading = () => {
   return (
     <div className="loading-container">
       <img
-        src="https://media.tenor.com/e6J4X97EZkIAAAAi/ash-now.gif"
+        src="https://alfamebeli.ru/upload/medialibrary/62d/qk2e7tfy0lftrsaiegp2bbjjj1gtr0as/dandy_xl_mehanizm.gif"
         alt="Loading..."
         className="loading-gif"
       />
