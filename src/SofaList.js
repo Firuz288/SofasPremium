@@ -11,7 +11,7 @@ const DivanList = () => {
     // Симуляция задержки загрузки данных на 2 секунды.
     setTimeout(() => {
       setIsLoading(false);
-    }, 2000);
+    }, 5000);
   }, []);
 
   const renderTableRows = () => {
