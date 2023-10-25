@@ -8,10 +8,10 @@ const DivanList = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Симуляция задержки загрузки данных на 2 секунды.
+    // задержки загрузки данныхо 7 секунды.
     setTimeout(() => {
       setIsLoading(false);
-    }, 5000);
+    }, 7000);
   }, []);
 
   const renderTableRows = () => {
