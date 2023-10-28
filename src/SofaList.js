@@ -1,23 +1,23 @@
-import React, { useState} from 'react';
+import React, { useState } from 'react';
 import './bootstrap.min.css';
 import Loading from './Loading';
-import axios from 'axios'; 
+import axios from 'axios';
 import './DivanList.css';
 
 const DivanList = () => {
-  const [divanData, setDivanData] = useState([]); 
-  const [isLoadingData, setIsLoadingData] = useState(false); // кнопка load.....
-  const [dataLoaded, setDataLoaded] = useState(false); // барои после нажатия удл кадани кнопка
-  const [buttonClicked, setButtonClicked] = useState(false);
+  const [divanData, setDivanData] = useState([]);
+  const [selectedDivans, setSelectedDivans] = useState([]); // Список выбранных элементов
+  const [isLoadingData, setIsLoadingData] = useState(false);
+  const [dataLoaded, setDataLoaded] = useState(false);
 
   const fetchData = () => {
-    setIsLoadingData(true); 
+    setIsLoadingData(true);
 
-    axios.get('https://course-api.com/javascript-store-products')
+    axios
+      .get('https://course-api.com/javascript-store-products')
       .then((response) => {
-        setDivanData(response.data);
-        setIsLoadingData(false); 
-        setButtonClicked(true);
+        setDivanData([...divanData, ...response.data]);
+        setIsLoadingData(false);
         setDataLoaded(true);
       })
       .catch((error) => {
@@ -25,9 +25,36 @@ const DivanList = () => {
         setIsLoadingData(false);
       });
   };
-const renderTableRows = () => {
+
+  const toggleSelect = (divanId) => {
+    const isSelected = selectedDivans.includes(divanId);
+
+    if (isSelected) {
+      setSelectedDivans(selectedDivans.filter((id) => id !== divanId));
+    } else {
+      setSelectedDivans([...selectedDivans, divanId]);
+    }
+  };
+
+  const deleteSelectedDivans = () => {
+    const updatedDivanData = divanData.filter(
+      (divan) => !selectedDivans.includes(divan.id)
+    );
+
+    setDivanData(updatedDivanData);
+    setSelectedDivans([]); // Очищаем список выбранных элементов
+  };
+
+  const renderTableRows = () => {
     return divanData.map((divan) => (
       <tr key={divan.id}>
+        <td>
+          <input
+            type="checkbox"
+            checked={selectedDivans.includes(divan.id)}
+            onChange={() => toggleSelect(divan.id)}
+          />
+        </td>
         <td>{divan.fields.company}</td>
         <td>{divan.id}</td>
         <td>{divan.fields.image[0].size}</td>
@@ -54,30 +81,31 @@ const renderTableRows = () => {
   return (
     <div className="container">
       <h1>Информация о диванах</h1>
-      {!dataLoaded && (
       <button onClick={fetchData} disabled={isLoadingData}>
-        {isLoadingData ? 'Загрузка...' : 'Загрузить данные'}
-      </button>)}
+        {isLoadingData ? 'Загрузка...' : 'Добавить новые данные'}
+      </button>
       {isLoadingData ? (
         <Loading />
       ) : (
-        <table className="table table-striped">
-          <thead>
-          {buttonClicked && (
-            <tr>
-              <th>Компания</th>
-              <th>ID</th>
-              <th>Размер (см)</th>
-              <th>Ширина (см)</th>
-              <th>Высота (см)</th>
-              <th>Цена</th>
-              <th>Изображение</th>
-            </tr>
-          )}
-          </thead>
-        
-          <tbody>{renderTableRows()}</tbody>
-        </table>
+        <div>
+          <button onClick={deleteSelectedDivans}>Удалить выбранные</button>
+          <table className="table table-striped">
+            <thead>
+              <tr>
+                <th>Выбрать</th>
+                <th>Компания</th>
+                <th>ID</th>
+                <th>Размер (см)</th>
+                <th>Ширина (см)</th>
+                <th>Высота (см)</th>
+                <th>Цена</th>
+                <th>Изображение</th>
+              </tr>
+            </thead>
+
+            <tbody>{renderTableRows()}</tbody>
+          </table>
+        </div>
       )}
     </div>
   );
