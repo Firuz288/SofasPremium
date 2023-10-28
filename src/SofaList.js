@@ -81,14 +81,14 @@ const DivanList = () => {
   return (
     <div className="container">
       <h1>Информация о диванах</h1>
-      <button onClick={fetchData} disabled={isLoadingData}>
+      <button onClick={fetchData} disabled={isLoadingData} style={{marginRight: 185,}}>
         {isLoadingData ? 'Загрузка...' : 'Добавить новые данные'}
       </button>
       {isLoadingData ? (
         <Loading />
       ) : (
         <div>
-          <button onClick={deleteSelectedDivans}>Удалить выбранные</button>
+          <button onClick={deleteSelectedDivans} style={{marginLeft: 10, marginTop:-28, position:'absolute'}}>Удалить выбранные</button>
           <table className="table table-striped">
             <thead>
               <tr>
