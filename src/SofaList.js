@@ -1,20 +1,31 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState} from 'react';
 import './bootstrap.min.css';
 import Loading from './Loading';
-import divanData from './divanData.json';
+import axios from 'axios'; 
 import './DivanList.css';
 
 const DivanList = () => {
-  const [isLoading, setIsLoading] = useState(true);
+  const [divanData, setDivanData] = useState([]); 
+  const [isLoadingData, setIsLoadingData] = useState(false); // кнопка load.....
+  const [dataLoaded, setDataLoaded] = useState(false); // барои после нажатия удл кадани кнопка
+  const [buttonClicked, setButtonClicked] = useState(false);
 
-  useEffect(() => {
-    // задержки загрузки данныхо 7 секунды.
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 7000);
-  }, []);
+  const fetchData = () => {
+    setIsLoadingData(true); 
 
-  const renderTableRows = () => {
+    axios.get('https://course-api.com/javascript-store-products')
+      .then((response) => {
+        setDivanData(response.data);
+        setIsLoadingData(false); 
+        setButtonClicked(true);
+        setDataLoaded(true);
+      })
+      .catch((error) => {
+        console.error('Ошибка загрузки данных:', error);
+        setIsLoadingData(false);
+      });
+  };
+const renderTableRows = () => {
     return divanData.map((divan) => (
       <tr key={divan.id}>
         <td>{divan.fields.company}</td>
@@ -43,11 +54,16 @@ const DivanList = () => {
   return (
     <div className="container">
       <h1>Информация о диванах</h1>
-      {isLoading ? ( 
+      {!dataLoaded && (
+      <button onClick={fetchData} disabled={isLoadingData}>
+        {isLoadingData ? 'Загрузка...' : 'Загрузить данные'}
+      </button>)}
+      {isLoadingData ? (
         <Loading />
       ) : (
         <table className="table table-striped">
           <thead>
+          {buttonClicked && (
             <tr>
               <th>Компания</th>
               <th>ID</th>
@@ -57,7 +73,9 @@ const DivanList = () => {
               <th>Цена</th>
               <th>Изображение</th>
             </tr>
+          )}
           </thead>
+        
           <tbody>{renderTableRows()}</tbody>
         </table>
       )}
